@@ -21,6 +21,7 @@ type conf struct {
 }
 
 func (c conf) ScriptLine(ref string) string {
+	ref = `"` + ref + `"`
 	cmd := strings.Join(c.Script, " && ")
 	cmd = strings.Replace(cmd, "$REF", ref, -1)
 	cmd = strings.Replace(cmd, "${REF}", ref, -1)
