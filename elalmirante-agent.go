@@ -20,8 +20,11 @@ type conf struct {
 	Script []string
 }
 
-func (c conf) ScriptLine() string {
-	return strings.Join(c.Script, " && ")
+func (c conf) ScriptLine(ref string) string {
+	cmd := strings.Join(c.Script, " && ")
+	cmd = strings.Replace(cmd, "$REF", ref, -1)
+	cmd = strings.Replace(cmd, "${REF}", ref, -1)
+	return cmd
 }
 
 func main() {
@@ -44,22 +47,23 @@ func main() {
 	}
 
 	// http server
-
 	authPair := conf.User + ":" + conf.Pass
 	http.Handle("/deploy",
 		middleware.BasicAuth(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				// only accept post
-				if r.Method != http.MethodPost {
-					log.Println("Method not supported.")
+				ref := r.URL.Query().Get("ref")
+
+				// only accept post and ref cannot be blank
+				if r.Method != http.MethodPost || ref == "" {
+					w.WriteHeader(http.StatusBadRequest)
 					return
 				}
 
-				log.Println("Deploying...")
+				log.Printf("Deploying	REF: %s ...", ref)
 
-				cmd := exec.Command("/bin/sh", "-c", conf.ScriptLine())
+				cmd := exec.Command("/bin/sh", "-c", conf.ScriptLine(ref))
 				outputBytes, err := cmd.CombinedOutput()
-				output := fmt.Sprintf("%s\n\n Error: %v\n", string(outputBytes), err)
+				output := fmt.Sprintf("\n%s\n\n Error: %v\n", string(outputBytes), err)
 
 				log.Println(output)
 
@@ -70,7 +74,6 @@ func main() {
 
 				fmt.Fprintf(w, output)
 				log.Println("Finished deploy.")
-
 			}), authPair))
 
 	bind := ":" + conf.Port
