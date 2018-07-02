@@ -2,8 +2,9 @@
 
 An agent for elalmirante, to use specify `agent` as provider.
 
-Advantages over webhook:
+Its a drop-in replacement for [webhook](https://gitlab.com/ozkar99/webhook) it can also be used stand alone, advantages over webhook:
 
+- file based configuration (vs cli args based).
 - get response code from script not service.
 - get output from script not service.
 
