@@ -1,6 +1,6 @@
 # elalmirante-agent-http
 
-An agent for elalmirante, to use specify `agent` as provider.
+An agent for elalmirante, to use specify `agent-http` as provider.
 
 Its a drop-in replacement for [webhook](https://gitlab.com/ozkar99/webhook) it can also be used stand alone, advantages over webhook:
 
