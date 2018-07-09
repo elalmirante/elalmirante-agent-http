@@ -1,4 +1,4 @@
-# elalmirante-agent
+# elalmirante-agent-http
 
 An agent for elalmirante, to use specify `agent` as provider.
 
